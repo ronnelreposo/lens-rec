@@ -1,0 +1,17 @@
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\bin\Release\lens2.exe
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\bin\Release\lens2.pdb
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\bin\Release\FirstFloor.ModernUI.dll
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\bin\Release\FirstFloor.ModernUI.xml
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\obj\Release\MainWindow.baml
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\obj\Release\App.baml
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\obj\Release\MainWindow.g.cs
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\obj\Release\App.g.cs
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\obj\Release\lens2_MarkupCompile.cache
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\obj\Release\lens2.g.resources
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\obj\Release\lens2.exe
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\obj\Release\lens2.pdb
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\bin\Release\lens2.exe.manifest
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\bin\Release\lens2.application
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\obj\Release\lens2.exe.manifest
+c:\users\arya\documents\visual studio 2015\Projects\lens2\lens2\obj\Release\lens2.application
+C:\Users\Arya\Documents\Visual Studio 2015\Projects\lens2\lens2\obj\Release\lens2.csprojResolveAssemblyReference.cache

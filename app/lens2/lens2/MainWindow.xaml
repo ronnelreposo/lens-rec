@@ -1,0 +1,72 @@
+﻿<mui:ModernWindow x:Class="lens2.MainWindow"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+                  Title="Lens Recommender" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen"
+                  Style="{StaticResource BlankWindow}">
+                  <!--Title="Lens Recommender" Height="Auto" Width="Auto" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen"-->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock x:Name="age_textBlock" Text="Age:" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" />
+        <TextBlock x:Name="astigmatism_textBlock" Text="Astigmatism:" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2"  Grid.Column="1" />
+        <TextBlock x:Name="tear_production_rate_textBlock" Text="Tear Production Rate:" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" />
+        <TextBlock x:Name="spec_perscrip_textBlock" Text="Spectacle Perscription:" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" />
+
+        <ComboBox x:Name="age_comboBox" HorizontalAlignment="Left" VerticalAlignment="Center" IsDropDownOpen="True" SelectedIndex="0" Grid.Row="1" Grid.Column="3" >
+            <ComboBoxItem Content="Young" />
+            <ComboBoxItem Content="Pre-presbyopic" />
+            <ComboBoxItem Content="Presbyopic" />
+        </ComboBox>
+        <ComboBox x:Name="astigmatism_comboBox" HorizontalAlignment="Left" VerticalAlignment="Center" IsDropDownOpen="True" SelectedIndex="0" Grid.Row="2" Grid.Column="3" >
+            <ComboBoxItem Content="Yes" />
+            <ComboBoxItem Content="No" />
+        </ComboBox>
+        <ComboBox x:Name="tear_production_rate_comboBox" HorizontalAlignment="Left" VerticalAlignment="Center" IsDropDownOpen="True" SelectedIndex="0" Grid.Row="3" Grid.Column="3" >
+            <ComboBoxItem Content="Normal" />
+            <ComboBoxItem Content="Reduced" />
+        </ComboBox>
+        <ComboBox x:Name="spec_perscrip_label_comboBox" HorizontalAlignment="Left" VerticalAlignment="Center" IsDropDownOpen="True" SelectedIndex="0" Grid.Row="4" Grid.Column="3" >
+            <ComboBoxItem Content="Myope" />
+            <ComboBoxItem Content="Hypermetrope" />
+        </ComboBox>
+
+        <Button x:Name="rec_button" Content="Recommend..." HorizontalAlignment="Left" VerticalAlignment="Center" Click="rec_button_Click" Grid.Row="5" Grid.Column="3" />
+
+        <TextBlock x:Name="lens_rec_textBlock" Text="Recommended Lens:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="5" Grid.Row="1" Grid.ColumnSpan="3" Style="{StaticResource Emphasis}"/>
+
+        <TextBlock x:Name="soft_rec_textBlock" Text="Soft:" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="5" Grid.Row="2" />
+        <TextBlock x:Name="none_rec_textBlock" Text="None:" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="5" Grid.Row="3" />
+        <TextBlock x:Name="hard_rec_textBlock" Text="Hard:" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="5" Grid.Row="4" />
+
+        <Rectangle x:Name="soft_rec" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="0" Grid.Column="7" Grid.Row="2" Grid.ColumnSpan="3" Fill="#FF1BA1E2" MaxWidth="100" />
+        <Rectangle x:Name="none_rec" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="0" Grid.Column="7" Grid.Row="3" Grid.ColumnSpan="3" Fill="#FF1BA1E2" MaxWidth="100" />
+        <Rectangle x:Name="hard_rec" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="0" Grid.Column="7" Grid.Row="4" Grid.ColumnSpan="3" Fill="#FF1BA1E2" MaxWidth="100" />
+
+        <TextBlock x:Name="soft_tb" Text="0%" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="9" Grid.Row="2" />
+        <TextBlock x:Name="none_tb" Text="0%" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="9" Grid.Row="3" />
+        <TextBlock x:Name="hard_tb" Text="0%" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="9" Grid.Row="4" />
+    </Grid>
+</mui:ModernWindow>
