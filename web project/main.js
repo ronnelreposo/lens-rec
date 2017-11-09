@@ -6,15 +6,18 @@
         return opVec2 (f, (i + 1), acc, xs, ys);
     }
   }
-  function mulVec2 (xs, ys) { return opVec2 ((function (x,y) { return x * y; }), 0, [], xs, ys); }
-  function add (x, y) { return x + y; }
-  function addVec (xs, ys) { return opVec2 (add, 0, [], xs, ys); }
+  var mul = (x, y) => x * y;
+  /* Multiply two vectors. */
+  var mulVec2 = (xs, ys) => opVec2(mul, 0, [], xs, ys);
+  var add = (x, y) => x + y;
+  /* Add two vectors. */
+  var addVec = (xs, ys) => opVec2 (add, 0, [], xs, ys);
   function wsRec (i, acc, ixs, ws_xss) {
     if (i > (ws_xss.length - 1)) { return acc; }
-    acc[i] = (mulVec2 (ixs, ws_xss[i]).reduce(add));
+    acc[i] = mulVec2(ixs, ws_xss[i]).reduce(add);
     return wsRec ((i + 1), acc, ixs, ws_xss);
   }
-  function ws (inputs, weights, bias) { return addVec (bias, (wsRec (0, [], inputs, weights))); }
+  var ws = (inputs, weights, bias) => addVec (bias, (wsRec (0, [], inputs, weights)));
   function ff (f, inputs) {
     var ihws = [ 
         [ 3.831233387, 4.01329833, 6.296136811, 6.112385545 ],
@@ -51,7 +54,8 @@
     var cont_xs = [
       document.getElementById("soft_cont"),
       document.getElementById("none_cont"),
-      document.getElementById("hard_cont")];
+      document.getElementById("hard_cont")
+    ];
 
     var class_xs = ["Soft: ", "None: ", "Hard: "];
 

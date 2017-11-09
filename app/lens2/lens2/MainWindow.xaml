@@ -53,7 +53,7 @@
             <ComboBoxItem Content="Hypermetrope" />
         </ComboBox>
 
-        <Button x:Name="rec_button" Content="Recommend..." HorizontalAlignment="Left" VerticalAlignment="Center" Click="rec_button_Click" Grid.Row="5" Grid.Column="3" />
+        <Button x:Name="rec_button" Content="Recommend..." HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="5" Grid.Column="3" />
 
         <TextBlock x:Name="lens_rec_textBlock" Text="Recommended Lens:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="5" Grid.Row="1" Grid.ColumnSpan="3" Style="{StaticResource Emphasis}"/>
 
@@ -61,12 +61,12 @@
         <TextBlock x:Name="none_rec_textBlock" Text="None:" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="5" Grid.Row="3" />
         <TextBlock x:Name="hard_rec_textBlock" Text="Hard:" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="5" Grid.Row="4" />
 
-        <Rectangle x:Name="soft_rec" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="0" Grid.Column="7" Grid.Row="2" Grid.ColumnSpan="3" Fill="#FF1BA1E2" MaxWidth="100" />
-        <Rectangle x:Name="none_rec" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="0" Grid.Column="7" Grid.Row="3" Grid.ColumnSpan="3" Fill="#FF1BA1E2" MaxWidth="100" />
-        <Rectangle x:Name="hard_rec" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="0" Grid.Column="7" Grid.Row="4" Grid.ColumnSpan="3" Fill="#FF1BA1E2" MaxWidth="100" />
+        <Rectangle x:Name="softRec" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="0" Grid.Column="7" Grid.Row="2" Grid.ColumnSpan="3" Fill="#FF1BA1E2" MaxWidth="100" />
+        <Rectangle x:Name="noneRec" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="0" Grid.Column="7" Grid.Row="3" Grid.ColumnSpan="3" Fill="#FF1BA1E2" MaxWidth="100" />
+        <Rectangle x:Name="hardRec" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="0" Grid.Column="7" Grid.Row="4" Grid.ColumnSpan="3" Fill="#FF1BA1E2" MaxWidth="100" />
 
-        <TextBlock x:Name="soft_tb" Text="0%" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="9" Grid.Row="2" />
-        <TextBlock x:Name="none_tb" Text="0%" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="9" Grid.Row="3" />
-        <TextBlock x:Name="hard_tb" Text="0%" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="9" Grid.Row="4" />
+        <TextBlock x:Name="softTextBlock" Text="0%" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="9" Grid.Row="2" />
+        <TextBlock x:Name="noneTextBlock" Text="0%" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="9" Grid.Row="3" />
+        <TextBlock x:Name="hardTextBlock" Text="0%" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="9" Grid.Row="4" />
     </Grid>
 </mui:ModernWindow>
