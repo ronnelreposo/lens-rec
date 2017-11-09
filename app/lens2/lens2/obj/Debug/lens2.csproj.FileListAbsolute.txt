@@ -15,3 +15,5 @@ C:\Users\Arya\Documents\Visual Studio 2015\Projects\lens2\lens2\bin\Debug\lens2.
 C:\Users\Arya\Documents\Visual Studio 2015\Projects\lens2\lens2\obj\Debug\lens2.csprojResolveAssemblyReference.cache
 C:\Users\Arya\Documents\Visual Studio 2015\Projects\lens2\lens2\obj\Debug\lens2.exe.manifest
 C:\Users\Arya\Documents\Visual Studio 2015\Projects\lens2\lens2\obj\Debug\lens2.application
+D:\Projects\AI\lens-rec\app\lens2\lens2\obj\Debug\lens2.exe
+D:\Projects\AI\lens-rec\app\lens2\lens2\obj\Debug\lens2.pdb
