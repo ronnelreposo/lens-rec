@@ -63,10 +63,10 @@
 
         <Rectangle x:Name="softRec" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="0" Grid.Column="7" Grid.Row="2" Grid.ColumnSpan="3" Fill="#FF1BA1E2" MaxWidth="100" />
         <Rectangle x:Name="noneRec" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="0" Grid.Column="7" Grid.Row="3" Grid.ColumnSpan="3" Fill="#FF1BA1E2" MaxWidth="100" />
-        <Rectangle x:Name="hard_rec" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="0" Grid.Column="7" Grid.Row="4" Grid.ColumnSpan="3" Fill="#FF1BA1E2" MaxWidth="100" />
+        <Rectangle x:Name="hardRec" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="0" Grid.Column="7" Grid.Row="4" Grid.ColumnSpan="3" Fill="#FF1BA1E2" MaxWidth="100" />
 
         <TextBlock x:Name="softTextBlock" Text="0%" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="9" Grid.Row="2" />
-        <TextBlock x:Name="noneLabeltb" Text="0%" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="9" Grid.Row="3" />
+        <TextBlock x:Name="noneTextBlock" Text="0%" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="9" Grid.Row="3" />
         <TextBlock x:Name="hardTextBlock" Text="0%" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="9" Grid.Row="4" />
     </Grid>
 </mui:ModernWindow>

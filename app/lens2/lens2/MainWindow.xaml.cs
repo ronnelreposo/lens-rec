@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
+using lens2.Ext;
 
 namespace lens2
 {
@@ -15,6 +16,12 @@ namespace lens2
         public MainWindow()
         {
             InitializeComponent();
+
+            var sRecommendButtonClick = rec_button.StreamClickEvent();
+            sRecommendButtonClick.Subscribe(button =>
+            {
+                rec_button_Click(null, null);
+            });
         }
 
         async void rec_button_Click(object sender, RoutedEventArgs e)
