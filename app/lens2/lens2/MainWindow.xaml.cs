@@ -36,9 +36,10 @@ namespace lens2
 
             var clearedOutputControlVector = from rectangle in outputControlVector
                                              select resetWidth(rectangle);
+
             await Task.WhenAll(fmap(0,
                 (value, pl, pb) =>
-                    progress((int) value, 1, (a, b) => a + b, Tuple.Create(pl, pb)),
+                    progress((int) value, 1, Tuple.Create(pl, pb)),
                 task_xs, predictedOutput, outputLabelControlVector, clearedOutputControlVector.ToArray()));
 
             rec_button.IsEnabled = true;
@@ -81,9 +82,7 @@ namespace lens2
         /// <returns>The reseted rectangle width.</returns>
         Rectangle resetWidth(Rectangle rec, int defaultWidth = 0) => changeWidth(defaultWidth, rec);
 
-        async Task<Tuple<TextBlock, Rectangle>> progress(int max, int delay,
-            Func<double, double, double> delta,
-            Tuple<TextBlock, Rectangle> progressElems)
+        async Task<Tuple<TextBlock, Rectangle>> progress(int max, int delay, Tuple<TextBlock, Rectangle> progressElems)
         {
             if (progressElems.Item2.Width.Equals(max))
             {
@@ -92,11 +91,11 @@ namespace lens2
 
             await Task.Delay(delay);
 
-            var delta_val = delta(progressElems.Item2.Width, 1);
+            var delta_val = progressElems.Item2.Width + 1;
             var progressedLabel = changePercentageContent(delta_val, progressElems.Item1);
             var progressedRec = changeWidth(delta_val, progressElems.Item2);
 
-            return await progress(max, delay, delta, Tuple.Create(progressedLabel, progressedRec));
+            return await progress(max, delay, Tuple.Create(progressedLabel, progressedRec));
         }
 
         Task[] fmap(int i,
