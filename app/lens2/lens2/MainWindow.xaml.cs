@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 using static lens2.Predictor;
+using static System.Convert;
 using static System.Math;
 using static System.Reactive.Unit;
 using static System.Threading.Tasks.Task;
@@ -85,9 +86,33 @@ namespace lens2
 
             var progressed = from valuedOutputControls in outputControlsVectorWithValue
                              let _ = valuedOutputControls
-                             select ProgressAsync(_.Value, _.Rectangle, _.TextBlock, EaseInOutCubic);
+                             let value = ToInt16(_.Value)
+                             let rectangle = _.Rectangle
+                             let textblock = _.TextBlock
+                             select ProgressAsync(value, rectangle, textblock, EaseInOutCubic);
 
             return progressed.ToArray();
+        }
+
+        double encodeClass(int[] classIndexVector, int index) => classIndexVector[index];
+
+        double[] encodeInputs(ComboBox[] inputControls)
+        {
+            /* The first input control uses the two class encoding only. */
+            var threeClasses = new [] { 1, 0, -1 };
+            var firstControl = inputControls[0];
+            var firstControlIndex = firstControl.SelectedIndex;
+            var firstInput = encodeClass(threeClasses, firstControlIndex);
+
+            /* The remaining input controls use three class encoding. */
+            var twoClasses = new [] { 1, -1 };
+            var encodedInputs = from inputControl in inputControls.Skip(1)
+                                let index = inputControl.SelectedIndex
+                                select encodeClass(twoClasses, index);
+
+            var allEncodedInputs = new[] { firstInput }.Concat(encodedInputs).ToArray();
+
+            return allEncodedInputs;
         }
 
         /// <summary>
@@ -96,16 +121,19 @@ namespace lens2
         /// <returns>Predicted output vector</returns>
         double[] predictOutput ()
         {
-            var twoClasses = new [] { 1, -1 };
-            var threeClasses = new [] { 1, 0, -1 };
+            var inputControlVector = new[]
+            {
+                age_comboBox,
+                spec_perscrip_label_comboBox,
+                astigmatism_comboBox,
+                tear_production_rate_comboBox
+            };
 
-            var predictedValueVector = predict(
-                x => x < 0 ? 0 : Round(100 * x),
-                new double[] {
-                        threeClasses [ age_comboBox.SelectedIndex ],
-                        twoClasses [ spec_perscrip_label_comboBox.SelectedIndex ],
-                        twoClasses [ astigmatism_comboBox.SelectedIndex ],
-                        twoClasses [ tear_production_rate_comboBox.SelectedIndex ] });
+            var encodedInputs = encodeInputs(inputControlVector);
+
+            Func<double, double> roundToCent = x => x < 0 ? 0 : Round(100 * x);
+
+            var predictedValueVector = predict(roundToCent, encodedInputs);
 
             return predictedValueVector;
         }
@@ -176,7 +204,7 @@ namespace lens2
         /// <param name="i">The step index. Zero by default.</param>
         /// <param name="delay">The step delay. 3 seconds by default.</param>
         /// <returns>Unit</returns>
-        async Task<Unit> ProgressAsync (double max, Rectangle rectangle, TextBlock textblock, Func<double, double> delta, int i = 0, int delay = 3)
+        async Task<Unit> ProgressAsync (int max, Rectangle rectangle, TextBlock textblock, Func<double, double> delta, int i = 0, int delay = 3)
         {
             if ( i.Equals(max) ) { return Default; }
             
@@ -188,7 +216,7 @@ namespace lens2
 
             await Delay(delay);
 
-            return await ProgressAsync(max, rectangleDelta, textblock, delta, ( i + 1 ));
+            return await ProgressAsync(max, rectangleDelta, textBlockDelta, delta, ( i + 1 ));
         }
     }
 }
