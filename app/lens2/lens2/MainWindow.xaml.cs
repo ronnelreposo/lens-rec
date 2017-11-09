@@ -1,10 +1,11 @@
 ﻿using FirstFloor.ModernUI.Windows.Controls;
+using lens2.Ext;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
-using lens2.Ext;
 
 namespace lens2
 {
@@ -33,15 +34,12 @@ namespace lens2
             var outputLabelControlVector = new TextBlock[] { softTextBlock, noneTextBlock, hardTextBlock };
             var task_xs = new Task[predictedOutput.Length];
 
+            var clearedOutputControlVector = from rectangle in outputControlVector
+                                             select resetWidth(rectangle);
             await Task.WhenAll(fmap(0,
                 (value, pl, pb) =>
-                    progress(0, 1, (a, b) => a - b, Tuple.Create(pl, pb)),
-                task_xs, predictedOutput, outputLabelControlVector, outputControlVector));
-
-            await Task.WhenAll(fmap(0,
-                (value, pl, pb) =>
-                    progress((int)value, 1, (a, b) => a + b, Tuple.Create(pl, pb)),
-                task_xs, predictedOutput, outputLabelControlVector, outputControlVector));
+                    progress((int) value, 1, (a, b) => a + b, Tuple.Create(pl, pb)),
+                task_xs, predictedOutput, outputLabelControlVector, clearedOutputControlVector.ToArray()));
 
             rec_button.IsEnabled = true;
         }
@@ -74,6 +72,14 @@ namespace lens2
             rec.Width = width;
             return rec;
         }
+
+        /// <summary>
+        /// Resets the width of the Rectangle to its default width.
+        /// </summary>
+        /// <param name="rec">The given rectangle.</param>
+        /// <param name="defaultWidth">The Default width of the rectangle, default value of 0.</param>
+        /// <returns>The reseted rectangle width.</returns>
+        Rectangle resetWidth(Rectangle rec, int defaultWidth = 0) => changeWidth(defaultWidth, rec);
 
         async Task<Tuple<TextBlock, Rectangle>> progress(int max, int delay,
             Func<double, double, double> delta,
