@@ -21,6 +21,32 @@ namespace lens2
         {
             rec_button.IsEnabled = false;
 
+            var predictedOutput = predictOutput();    
+            var rec_xs = new Rectangle[] { soft_rec, none_rec, hard_rec };
+            var tb_xs = new TextBlock[] { soft_tb, none_tb, hard_tb };
+            var task_xs = new Task[predictedOutput.Length];
+
+            Func<double, double, bool> condition = (a, b) => a == b;
+
+            await Task.WhenAll(fmap(0,
+                (value, pl, pb) =>
+                    progress(0, 1, condition, (a, b) => a - b, Tuple.Create(pl, pb)),
+                task_xs, predictedOutput, tb_xs, rec_xs));
+
+            await Task.WhenAll(fmap(0,
+                (value, pl, pb) =>
+                    progress((int)value, 1, condition, (a, b) => a + b, Tuple.Create(pl, pb)),
+                task_xs, predictedOutput, tb_xs, rec_xs));
+
+            rec_button.IsEnabled = true;
+        }
+
+        /// <summary>
+        /// Predict the output based on selected input indexes
+        /// </summary>
+        /// <returns>Predicted output vector</returns>
+        double[] predictOutput ()
+        {
             var twoClasses = new int[] { 1, -1 };
             var predicted_value_xs = Predictor.predict(
                 x => x < 0 ? 0 : Math.Round(100 * x),
@@ -29,23 +55,7 @@ namespace lens2
                         twoClasses [ spec_perscrip_label_comboBox.SelectedIndex ],
                         twoClasses [ astigmatism_comboBox.SelectedIndex ],
                         twoClasses [ tear_production_rate_comboBox.SelectedIndex ] });
-            var rec_xs = new Rectangle[] { soft_rec, none_rec, hard_rec };
-            var tb_xs = new TextBlock[] { soft_tb, none_tb, hard_tb };
-            var task_xs = new Task[predicted_value_xs.Length];
-
-            Func<double, double, bool> condition = (a, b) => a == b;
-
-            await Task.WhenAll(fmap(0,
-                (value, pl, pb) =>
-                    progress(0, 1, condition, (a, b) => a - b, Tuple.Create(pl, pb)),
-                task_xs, predicted_value_xs, tb_xs, rec_xs));
-
-            await Task.WhenAll(fmap(0,
-                (value, pl, pb) =>
-                    progress((int)value, 1, condition, (a, b) => a + b, Tuple.Create(pl, pb)),
-                task_xs, predicted_value_xs, tb_xs, rec_xs));
-
-            rec_button.IsEnabled = true;
+            return predicted_value_xs;
         }
 
         TextBlock changePercentageContent(double value, TextBlock tb)
