@@ -22,8 +22,8 @@ namespace lens2
             rec_button.IsEnabled = false;
 
             var predictedOutput = predictOutput();    
-            var rec_xs = new Rectangle[] { soft_rec, none_rec, hard_rec };
-            var tb_xs = new TextBlock[] { soft_tb, none_tb, hard_tb };
+            var outputControlVector = new Rectangle[] { softRec, noneRec, hardRec };
+            var outputLabelControlVector = new TextBlock[] { softTextBlock, noneTextBlock, hardTextBlock };
             var task_xs = new Task[predictedOutput.Length];
 
             Func<double, double, bool> condition = (a, b) => a == b;
@@ -31,12 +31,12 @@ namespace lens2
             await Task.WhenAll(fmap(0,
                 (value, pl, pb) =>
                     progress(0, 1, condition, (a, b) => a - b, Tuple.Create(pl, pb)),
-                task_xs, predictedOutput, tb_xs, rec_xs));
+                task_xs, predictedOutput, outputLabelControlVector, outputControlVector));
 
             await Task.WhenAll(fmap(0,
                 (value, pl, pb) =>
                     progress((int)value, 1, condition, (a, b) => a + b, Tuple.Create(pl, pb)),
-                task_xs, predictedOutput, tb_xs, rec_xs));
+                task_xs, predictedOutput, outputLabelControlVector, outputControlVector));
 
             rec_button.IsEnabled = true;
         }
