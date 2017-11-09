@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
+using System.Reactive.Linq;
 
 namespace lens2
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow: ModernWindow
+    public partial class MainWindow : ModernWindow
     {
-        public MainWindow()
+        public MainWindow ()
         {
             InitializeComponent();
 
@@ -25,24 +26,59 @@ namespace lens2
             });
         }
 
-        async void rec_button_Click(object sender, RoutedEventArgs e)
+        async void rec_button_Click (object sender, RoutedEventArgs e)
         {
             rec_button.IsEnabled = false;
 
-            var predictedOutput = predictOutput();    
-            var outputControlVector = new Rectangle[] { softRec, noneRec, hardRec };
+            var predictedOutput = predictOutput();
+            var outputRectangleControlVector = new Rectangle[] { softRec, noneRec, hardRec };
             var outputLabelControlVector = new TextBlock[] { softTextBlock, noneTextBlock, hardTextBlock };
-            var task_xs = new Task[predictedOutput.Length];
 
-            var clearedOutputControlVector = from rectangle in outputControlVector
+            var clearedRectangleControlVector = from rectangle
+                                             in outputRectangleControlVector
                                              select resetWidth(rectangle);
 
-            await Task.WhenAll(fmap(0,
-                (value, pl, pb) =>
-                    progress((int) value, 1, Tuple.Create(pl, pb)),
-                task_xs, predictedOutput, outputLabelControlVector, clearedOutputControlVector.ToArray()));
+            var progressed = progressOutputToControls(
+                clearedRectangleControlVector.ToArray(),
+                outputLabelControlVector,
+                predictedOutput);
+
+            await Task.WhenAll(progressed);
 
             rec_button.IsEnabled = true;
+        }
+
+        /// <summary>
+        /// Progresses the output value to output controls.
+        /// </summary>
+        /// <param name="rectangleControlVector">Rectangle output control, used as a progress bar.</param>
+        /// <param name="textBlockControlVector">TextBlock output control, used to view percentage.</param>
+        /// <param name="valueVector">The values to be progressed.</param>
+        /// <returns></returns>
+        Task<Tuple<TextBlock, Rectangle>>[] progressOutputToControls (Rectangle[] rectangleControlVector, TextBlock[] textBlockControlVector, double[] valueVector)
+        {
+            var outputControlsVector = rectangleControlVector
+                .Zip(textBlockControlVector,
+                (rectangle, textBlock) =>
+                new {
+                    Rectangle = rectangle,
+                    TextBlock = textBlock
+                });
+
+            var outputControlsVectorWithValue = valueVector
+                .Zip(outputControlsVector,
+                (value, outputControls) =>
+                new {
+                    Value = value,
+                    Rectangle = outputControls.Rectangle,
+                    TextBlock = outputControls.TextBlock
+                });
+
+            var progressed = outputControlsVectorWithValue
+                .Select(valuedOutputControls =>
+                progress((int) valuedOutputControls.Value, 1, Tuple.Create(valuedOutputControls.TextBlock, valuedOutputControls.Rectangle)));
+
+            return progressed.ToArray();
         }
 
         /// <summary>
@@ -96,16 +132,6 @@ namespace lens2
             var progressedRec = changeWidth(delta_val, progressElems.Item2);
 
             return await progress(max, delay, Tuple.Create(progressedLabel, progressedRec));
-        }
-
-        Task[] fmap(int i,
-            Func<double, TextBlock, Rectangle, Task> mapper,
-            Task[] acc, double[] d_xs,
-            TextBlock[] pl_xs, Rectangle[] pb_xs)
-        {
-            if (i > (acc.Length - 1)) { return acc; }
-            acc[i] = mapper(d_xs[i], pl_xs[i], pb_xs[i]);
-            return fmap((i + 1), mapper, acc, d_xs, pl_xs, pb_xs);
         }
     }
 }
