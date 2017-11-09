@@ -2,3 +2,9 @@
 
 #ignore .vs files
 app/lens2/\.vs/
+
+#ignored app binary Debug files
+app/lens2/lens2/bin/Debug/
+
+#ignored app object Debug files
+app/lens2/lens2/obj/Debug/
