@@ -2,12 +2,16 @@
 using lens2.Ext;
 using System;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
-using System.Reactive.Linq;
-using System.Reactive;
+using static lens2.Predictor;
+using static System.Math;
+using static System.Reactive.Unit;
+using static System.Threading.Tasks.Task;
 
 namespace lens2
 {
@@ -32,8 +36,8 @@ namespace lens2
             rec_button.IsEnabled = false;
 
             var predictedOutput = predictOutput();
-            var outputRectangleControlVector = new Rectangle[] { softRec, noneRec, hardRec };
-            var outputTextBlockControlVector = new TextBlock[] { softTextBlock, noneTextBlock, hardTextBlock };
+            var outputRectangleControlVector = new [] { softRec, noneRec, hardRec };
+            var outputTextBlockControlVector = new [] { softTextBlock, noneTextBlock, hardTextBlock };
 
             var clearedRectangleControlVector = from rectangle
                                              in outputRectangleControlVector
@@ -48,7 +52,7 @@ namespace lens2
                 clearedTextBlockControlVector.ToArray(),
                 predictedOutput);
 
-            await Task.WhenAll(progressed);
+            await WhenAll(progressed);
 
             rec_button.IsEnabled = true;
         }
@@ -59,7 +63,7 @@ namespace lens2
         /// <param name="rectangleControlVector">Rectangle output control, used as a progress bar.</param>
         /// <param name="textBlockControlVector">TextBlock output control, used to view percentage.</param>
         /// <param name="valueVector">The values to be progressed.</param>
-        /// <returns>Unit</returns>
+        /// <returns>Task<Unit>[]</returns>
         Task<Unit>[] progressOutputToControls (Rectangle[] rectangleControlVector, TextBlock[] textBlockControlVector, double[] valueVector)
         {
             var outputControlsVector = rectangleControlVector
@@ -72,16 +76,16 @@ namespace lens2
 
             var outputControlsVectorWithValue = valueVector
                 .Zip(outputControlsVector,
-                (value, outputControls) =>
+                (value, _) =>
                 new {
                     Value = value,
-                    Rectangle = outputControls.Rectangle,
-                    TextBlock = outputControls.TextBlock
+                    Rectangle = _.Rectangle,
+                    TextBlock = _.TextBlock
                 });
 
-            var progressed = outputControlsVectorWithValue
-                .Select(valuedOutputControls =>
-                ProgressAsync((int) valuedOutputControls.Value, valuedOutputControls.Rectangle, valuedOutputControls.TextBlock, EaseInOutCubic));
+            var progressed = from valuedOutputControls in outputControlsVectorWithValue
+                             let _ = valuedOutputControls
+                             select ProgressAsync(_.Value, _.Rectangle, _.TextBlock, EaseInOutCubic);
 
             return progressed.ToArray();
         }
@@ -92,15 +96,18 @@ namespace lens2
         /// <returns>Predicted output vector</returns>
         double[] predictOutput ()
         {
-            var twoClasses = new int[] { 1, -1 };
-            var predicted_value_xs = Predictor.predict(
-                x => x < 0 ? 0 : Math.Round(100 * x),
+            var twoClasses = new [] { 1, -1 };
+            var threeClasses = new [] { 1, 0, -1 };
+
+            var predictedValueVector = predict(
+                x => x < 0 ? 0 : Round(100 * x),
                 new double[] {
-                        new int[] { 1, 0, -1 } [ age_comboBox.SelectedIndex ],
+                        threeClasses [ age_comboBox.SelectedIndex ],
                         twoClasses [ spec_perscrip_label_comboBox.SelectedIndex ],
                         twoClasses [ astigmatism_comboBox.SelectedIndex ],
                         twoClasses [ tear_production_rate_comboBox.SelectedIndex ] });
-            return predicted_value_xs;
+
+            return predictedValueVector;
         }
 
         /// <summary>
@@ -169,21 +176,19 @@ namespace lens2
         /// <param name="i">The step index. Zero by default.</param>
         /// <param name="delay">The step delay. 3 seconds by default.</param>
         /// <returns>Unit</returns>
-        async Task<Unit> ProgressAsync (int max, Rectangle rectangle, TextBlock textblock, Func<double, double> delta, int i = 0, int delay = 3)
+        async Task<Unit> ProgressAsync (double max, Rectangle rectangle, TextBlock textblock, Func<double, double> delta, int i = 0, int delay = 3)
         {
-            if ( i.Equals(max) ) { return Unit.Default; }
-            else
-            {
-                var normalizedInput = minmax(i, max);
-                var i_ = delta(normalizedInput);
-                var width_ = Math.Round(i_ * max);
-                var rectangleDelta = changeWidth(width_, rectangle);
-                var textBlockDelta = changePercentageContent(width_, textblock);
+            if ( i.Equals(max) ) { return Default; }
+            
+            var normalizedInput = minmax(i, max);
+            var i_ = delta(normalizedInput);
+            var width_ = Round(i_ * max);
+            var rectangleDelta = changeWidth(width_, rectangle);
+            var textBlockDelta = changePercentageContent(width_, textblock);
 
-                await Task.Delay(delay);
+            await Delay(delay);
 
-                return await ProgressAsync(max, rectangleDelta, textblock, delta, ( i + 1 ));
-            }
+            return await ProgressAsync(max, rectangleDelta, textblock, delta, ( i + 1 ));
         }
     }
 }
