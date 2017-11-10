@@ -98,13 +98,13 @@ namespace lens2
 
         double[] encodeInputs(ComboBox[] inputControls)
         {
-            /* The first input control uses the two class encoding only. */
+            /* The first input control uses the three class encoding. */
             var threeClasses = new [] { 1, 0, -1 };
             var firstControl = inputControls[0];
             var firstControlIndex = firstControl.SelectedIndex;
             var firstInput = encodeClass(threeClasses, firstControlIndex);
 
-            /* The remaining input controls use three class encoding. */
+            /* The remaining input controls use two class encoding. */
             var twoClasses = new [] { 1, -1 };
             var encodedInputs = from inputControl in inputControls.Skip(1)
                                 let index = inputControl.SelectedIndex
