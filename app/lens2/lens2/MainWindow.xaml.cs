@@ -36,7 +36,15 @@ namespace lens2
         {
             rec_button.IsEnabled = false;
 
-            var predictedOutput = predictOutput();
+            var inputControlVector = new[]
+            {
+                age_comboBox,
+                spec_perscrip_label_comboBox,
+                astigmatism_comboBox,
+                tear_production_rate_comboBox
+            };
+
+            var predictedOutput = predictOutput(encodeInputs, inputControlVector);
             var outputRectangleControlVector = new [] { softRec, noneRec, hardRec };
             var outputTextBlockControlVector = new [] { softTextBlock, noneTextBlock, hardTextBlock };
 
@@ -116,20 +124,14 @@ namespace lens2
         }
 
         /// <summary>
-        /// Predict the output based on selected input indexes
+        /// Predict the output vector based on encoder function selected and the input vector control.
         /// </summary>
-        /// <returns>Predicted output vector</returns>
-        double[] predictOutput ()
+        /// <param name="encoder">The Encoder function delegate</param>
+        /// <param name="inputControlVector">The input control vector.</param>
+        /// <returns>The predicted output vector.</returns>
+        double[] predictOutput (Func<ComboBox[], double[]> encoder, ComboBox[] inputControlVector)
         {
-            var inputControlVector = new[]
-            {
-                age_comboBox,
-                spec_perscrip_label_comboBox,
-                astigmatism_comboBox,
-                tear_production_rate_comboBox
-            };
-
-            var encodedInputs = encodeInputs(inputControlVector);
+            var encodedInputs = encoder(inputControlVector);
 
             Func<double, double> roundToCent = x => x < 0 ? 0 : Round(100 * x);
 
