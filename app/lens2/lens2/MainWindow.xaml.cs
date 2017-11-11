@@ -44,8 +44,12 @@ namespace lens2
                 tear_production_rate_comboBox
             };
 
-            var predictedOutput = predictOutput(encodeInputs, inputControlVector);
+            var encodedInputs = encodeInputs(encodeIndexToClass, inputControlVector);
+
+            var predictedOutput = predictOutput(encodedInputs);
+
             var outputRectangleControlVector = new [] { softRec, noneRec, hardRec };
+
             var outputTextBlockControlVector = new [] { softTextBlock, noneTextBlock, hardTextBlock };
 
             var clearedRectangleControlVector = from rectangle
@@ -102,21 +106,34 @@ namespace lens2
             return progressed.ToArray();
         }
 
-        double encodeClass(int[] classIndexVector, int index) => classIndexVector[index];
+        /// <summary>
+        /// Converts a certain index to a class value.
+        /// It uses table index lookup using the classIndexVector as the table.
+        /// </summary>
+        /// <param name="classIndexVector">The table lookup vector</param>
+        /// <param name="index">The input index</param>
+        /// <returns>class value</returns>
+        double encodeIndexToClass(int[] classIndexVector, int index) => classIndexVector[index];
 
-        double[] encodeInputs(ComboBox[] inputControls)
+        /// <summary>
+        /// Encodes the inputs of Input Control Vector using the class Encoder function delegate.
+        /// </summary>
+        /// <param name="classEncoder">Class Encoder function delegate</param>
+        /// <param name="inputControlVector">Input control vector</param>
+        /// <returns>Encoded input vector</returns>
+        double[] encodeInputs(Func<int[], int, double> classEncoder, ComboBox[] inputControlVector)
         {
             /* The first input control uses the three class encoding. */
             var threeClasses = new [] { 1, 0, -1 };
-            var firstControl = inputControls[0];
+            var firstControl = inputControlVector[0];
             var firstControlIndex = firstControl.SelectedIndex;
-            var firstInput = encodeClass(threeClasses, firstControlIndex);
+            var firstInput = classEncoder(threeClasses, firstControlIndex);
 
             /* The remaining input controls use two class encoding. */
             var twoClasses = new [] { 1, -1 };
-            var encodedInputs = from inputControl in inputControls.Skip(1)
+            var encodedInputs = from inputControl in inputControlVector.Skip(1)
                                 let index = inputControl.SelectedIndex
-                                select encodeClass(twoClasses, index);
+                                select classEncoder(twoClasses, index);
 
             var allEncodedInputs = new[] { firstInput }.Concat(encodedInputs).ToArray();
 
@@ -124,18 +141,15 @@ namespace lens2
         }
 
         /// <summary>
-        /// Predict the output vector based on encoder function selected and the input vector control.
+        /// Predict the output vector based on encoder function selected and the input vector control
         /// </summary>
-        /// <param name="encoder">The Encoder function delegate</param>
-        /// <param name="inputControlVector">The input control vector.</param>
-        /// <returns>The predicted output vector.</returns>
-        double[] predictOutput (Func<ComboBox[], double[]> encoder, ComboBox[] inputControlVector)
+        /// <param name="inputVector">The input vector</param>
+        /// <returns>The predicted output vector</returns>
+        double[] predictOutput (double[] inputVector)
         {
-            var encodedInputs = encoder(inputControlVector);
-
             Func<double, double> roundToCent = x => x < 0 ? 0 : Round(100 * x);
 
-            var predictedValueVector = predict(roundToCent, encodedInputs);
+            var predictedValueVector = predict(roundToCent, inputVector);
 
             return predictedValueVector;
         }
