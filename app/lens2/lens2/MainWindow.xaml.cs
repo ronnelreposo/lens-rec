@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 using static lens2.Predictor;
@@ -25,50 +24,39 @@ namespace lens2
         {
             InitializeComponent();
 
-            var sRecommendButtonClick = rec_button.StreamClickEvent();
-            sRecommendButtonClick.Subscribe(button =>
-            {
-                rec_button_Click(null, null);
-            });
-        }
-
-        async void rec_button_Click (object sender, RoutedEventArgs e)
-        {
-            rec_button.IsEnabled = false;
-
-            var inputControlVector = new[]
-            {
-                age_comboBox,
-                spec_perscrip_label_comboBox,
-                astigmatism_comboBox,
-                tear_production_rate_comboBox
-            };
-
-            var encodedInputs = encodeInputs(encodeIndexToClass, inputControlVector);
-
-            var predictedOutput = predictOutput(encodedInputs);
-
-            var outputRectangleControlVector = new [] { softRec, noneRec, hardRec };
-
-            var outputTextBlockControlVector = new [] { softTextBlock, noneTextBlock, hardTextBlock };
-
-            var clearedRectangleControlVector = from rectangle
+            var sProgressed = from button in rec_button.StreamClickEvent()
+                                        let inputControlVector = new[] {
+                                            age_comboBox,
+                                            spec_perscrip_label_comboBox,
+                                            astigmatism_comboBox,
+                                            tear_production_rate_comboBox
+                                        }
+                                        let encodedInputs = encodeInputs(encodeIndexToClass, inputControlVector)
+                                        let predictedOutput = predictOutput(encodedInputs)
+                                        let outputRectangleControlVector = new [] { softRec, noneRec, hardRec }
+                                        let outputTextBlockControlVector = new [] {
+                                            softTextBlock, noneTextBlock, hardTextBlock
+                                        }
+                                        let clearedRectangleControlVector = from rectangle
                                              in outputRectangleControlVector
-                                             select resetWidth(rectangle);
-
-            var clearedTextBlockControlVector = from textblock
+                                             select resetWidth(rectangle)
+                                        let clearedTextBlockControlVector = from textblock
                                                 in outputTextBlockControlVector
-                                                select changeText(textblock);
+                                                select changeText(textblock)                        
+                                        let progressed = progressOutputToControls(
+                                            clearedRectangleControlVector.ToArray(),
+                                            clearedTextBlockControlVector.ToArray(),
+                                            predictedOutput)
+                                        select progressed;
 
-            var progressed = progressOutputToControls(
-                clearedRectangleControlVector.ToArray(),
-                clearedTextBlockControlVector.ToArray(),
-                predictedOutput);
+            sProgressed.Subscribe(async allProgressTask =>
+            {
+                rec_button.IsEnabled = false;
+                await WhenAll(allProgressTask);
+                rec_button.IsEnabled = true;
+            });
 
-            await WhenAll(progressed);
-
-            rec_button.IsEnabled = true;
-        }
+        } /* end constructor. */
 
         /// <summary>
         /// Progresses the output value to output controls.
