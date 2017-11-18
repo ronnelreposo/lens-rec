@@ -199,7 +199,7 @@ namespace lens2
 
         /// <summary>
         /// Progresses the output (Asyncronously).
-        /// It uses Rectangle and Textbox to project the maximum value.
+        /// It uses Rectangle and Textblock to project the maximum value.
         /// </summary>
         /// <param name="max">The maximum value to be projected.</param>
         /// <param name="rectangle">The Rectangle control.</param>
